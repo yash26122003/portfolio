@@ -1,0 +1,23 @@
+.marquee-section {
+  padding: 32px 0; overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.marquee-track {
+  display: flex; width: max-content;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track.reverse { animation-direction: reverse; }
+.marquee-text {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 700; white-space: nowrap;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
