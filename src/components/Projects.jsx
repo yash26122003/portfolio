@@ -1,5 +1,5 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import './Projects.css'
 
 const projects = [
@@ -25,7 +25,7 @@ const projects = [
   {
     title: 'Self-Driven Car Simulator',
     type: 'Deep Learning · RL',
-    desc: 'Reinforcement learning agent navigating complex roads autonomously using sensor fusion and CNN perception.',
+    desc: 'Reinforcement learning agent navigating roads autonomously using sensor fusion and CNN-based perception.',
     tags: ['Python', 'PyTorch', 'OpenCV', 'RL'],
     image: '/assets/images/project_ml.png',
     color: '#a78bfa',
@@ -43,7 +43,7 @@ const projects = [
   {
     title: 'Deep Fake Detection',
     type: 'Hackathon · Vision',
-    desc: 'Computer vision pipeline detecting manipulated facial imagery with 94% precision using deep learning.',
+    desc: 'Computer vision pipeline detecting manipulated facial imagery with 94% precision via deep learning.',
     tags: ['OpenCV', 'TensorFlow', 'Python', 'CNN'],
     image: '/assets/images/project_vision.png',
     color: '#fb7185',
@@ -52,18 +52,64 @@ const projects = [
 ]
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 50 },
-  whileInView: { opacity: 1, y: 0 },
+  initial: { opacity: 0, y: 60, filter: 'blur(8px)' },
+  whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' },
   viewport: { once: true, margin: '-80px' },
-  transition: { duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }
+  transition: { duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }
 })
+
+function ProjectRow({ project, index }) {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const imgY = useTransform(scrollYProgress, [0, 1], [20, -20])
+
+  return (
+    <motion.a
+      ref={ref}
+      href={project.github}
+      target="_blank"
+      rel="noopener"
+      className={`project-row ${project.featured ? 'featured' : ''}`}
+      {...fadeUp(index * 0.08)}
+    >
+      <div className="project-row-left">
+        <div className="project-index" style={{ color: project.color }}>
+          {String(index + 1).padStart(2, '0')}
+        </div>
+        <div className="project-info">
+          <span className="project-type">{project.type}</span>
+          <h3 className="project-name">{project.title}</h3>
+          <p className="project-desc">{project.desc}</p>
+          <div className="project-tags">
+            {project.tags.map(t => (
+              <span key={t} style={{
+                borderColor: `${project.color}33`,
+                color: project.color,
+                background: `${project.color}0d`
+              }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="project-row-right">
+        <motion.div className="project-thumb" style={{ y: imgY }}>
+          <img src={project.image} alt={project.title} />
+          <div className="thumb-overlay" style={{ background: `linear-gradient(135deg, ${project.color}22, transparent)` }} />
+        </motion.div>
+        <div className="project-arrow magnetic">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </div>
+      </div>
+    </motion.a>
+  )
+}
 
 export default function Projects() {
   return (
     <section className="projects" id="work">
       <div className="projects-container">
         <motion.div className="projects-header" {...fadeUp()}>
-          <span className="section-tag">Selected Work</span>
+          <span className="section-tag">// selected work</span>
           <h2 className="projects-title">
             Creating experiences<br />worth <span className="accent-text">remembering</span>
           </h2>
@@ -74,37 +120,7 @@ export default function Projects() {
 
         <div className="projects-list">
           {projects.map((p, i) => (
-            <motion.a
-              key={p.title}
-              href={p.github}
-              target="_blank"
-              rel="noopener"
-              className={`project-row ${p.featured ? 'featured' : ''}`}
-              {...fadeUp(i * 0.1)}
-              whileHover={{ x: 12 }}
-            >
-              <div className="project-row-left">
-                <div className="project-index" style={{ color: p.color }}>
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <div className="project-info">
-                  <span className="project-type">{p.type}</span>
-                  <h3 className="project-name">{p.title}</h3>
-                  <p className="project-desc">{p.desc}</p>
-                  <div className="project-tags">
-                    {p.tags.map(t => <span key={t} style={{ borderColor: `${p.color}33`, color: p.color, background: `${p.color}11` }}>{t}</span>)}
-                  </div>
-                </div>
-              </div>
-              <div className="project-row-right">
-                <div className="project-thumb" style={{ '--accent-color': p.color }}>
-                  <img src={p.image} alt={p.title} />
-                </div>
-                <div className="project-arrow">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                </div>
-              </div>
-            </motion.a>
+            <ProjectRow key={p.title} project={p} index={i} />
           ))}
         </div>
       </div>

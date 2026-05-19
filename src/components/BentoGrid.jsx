@@ -1,35 +1,55 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import './BentoGrid.css'
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }
+  initial: { opacity: 0, y: 50, filter: 'blur(8px)' },
+  whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  viewport: { once: true, margin: '-80px' },
+  transition: { duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }
 })
 
 const techStack = [
-  { name: 'React', icon: '⚛️' },
-  { name: 'Python', icon: '🐍' },
-  { name: 'PyTorch', icon: '🔥' },
-  { name: 'Node.js', icon: '🟢' },
-  { name: 'TypeScript', icon: '🔷' },
-  { name: 'PostgreSQL', icon: '🐘' },
-  { name: 'Docker', icon: '🐳' },
-  { name: 'AWS', icon: '☁️' },
-  { name: 'TensorFlow', icon: '🧠' },
-  { name: 'MongoDB', icon: '🍃' },
-  { name: 'OpenCV', icon: '👁️' },
-  { name: 'Git', icon: '🌿' },
+  { name: 'React', icon: '⚛️' }, { name: 'Python', icon: '🐍' },
+  { name: 'PyTorch', icon: '🔥' }, { name: 'Node.js', icon: '🟢' },
+  { name: 'TypeScript', icon: '🔷' }, { name: 'PostgreSQL', icon: '🐘' },
+  { name: 'Docker', icon: '🐳' }, { name: 'AWS', icon: '☁️' },
+  { name: 'TensorFlow', icon: '🧠' }, { name: 'MongoDB', icon: '🍃' },
+  { name: 'OpenCV', icon: '👁️' }, { name: 'Git', icon: '🌿' },
 ]
+
+function GlowCard({ children, className, delay = 0 }) {
+  const cardRef = useRef(null)
+
+  const handleMouseMove = (e) => {
+    const card = cardRef.current
+    if (!card) return
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    card.style.setProperty('--glow-x', `${x}px`)
+    card.style.setProperty('--glow-y', `${y}px`)
+  }
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className={`bento-card ${className || ''}`}
+      onMouseMove={handleMouseMove}
+      {...fadeUp(delay)}
+    >
+      <div className="card-glow" />
+      {children}
+    </motion.div>
+  )
+}
 
 export default function BentoGrid() {
   return (
     <section className="bento" id="about">
       <div className="bento-container">
         <motion.div className="bento-header" {...fadeUp()}>
-          <span className="section-tag">About me</span>
+          <span className="section-tag">// about me</span>
           <h2 className="bento-title">
             I design in <span className="accent-text">code</span>,<br />
             not just screens.
@@ -37,8 +57,7 @@ export default function BentoGrid() {
         </motion.div>
 
         <div className="bento-grid">
-          {/* Card 1: Big intro */}
-          <motion.div className="bento-card card-intro" {...fadeUp(0.1)}>
+          <GlowCard className="card-intro" delay={0.1}>
             <div className="card-inner">
               <p className="card-quote">
                 "Every line of code should either solve a problem or create something beautiful.
@@ -54,19 +73,19 @@ export default function BentoGrid() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 2: Tech stack orbit */}
-          <motion.div className="bento-card card-stack" {...fadeUp(0.2)}>
+          <GlowCard className="card-stack" delay={0.2}>
             <div className="card-inner">
               <p className="card-label">Tech I Breathe</p>
               <div className="stack-pills">
-                {techStack.map((t, i) => (
+                {techStack.map((t) => (
                   <motion.span
                     key={t.name}
-                    className="stack-pill"
-                    whileHover={{ scale: 1.1, y: -4 }}
-                    transition={{ type: 'spring', stiffness: 400 }}
+                    className="stack-pill magnetic"
+                    whileHover={{ scale: 1.08, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
                   >
                     <span className="pill-icon">{t.icon}</span>
                     {t.name}
@@ -74,73 +93,58 @@ export default function BentoGrid() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 3: Stats */}
-          <motion.div className="bento-card card-stats" {...fadeUp(0.15)}>
+          <GlowCard className="card-stats" delay={0.15}>
             <div className="card-inner">
               <div className="stat-grid">
-                <div className="stat-block">
-                  <span className="stat-number">9+</span>
-                  <span className="stat-label">Projects</span>
-                </div>
-                <div className="stat-block">
-                  <span className="stat-number">5+</span>
-                  <span className="stat-label">Hackathons</span>
-                </div>
-                <div className="stat-block">
-                  <span className="stat-number">3+</span>
-                  <span className="stat-label">Years Exp</span>
-                </div>
-                <div className="stat-block">
-                  <span className="stat-number">15+</span>
-                  <span className="stat-label">Technologies</span>
-                </div>
+                {[
+                  { n: '9+', l: 'Projects' }, { n: '5+', l: 'Hackathons' },
+                  { n: '3+', l: 'Years Exp' }, { n: '15+', l: 'Technologies' },
+                ].map((s, i) => (
+                  <div key={i} className="stat-block">
+                    <span className="stat-number">{s.n}</span>
+                    <span className="stat-label">{s.l}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 4: Personality quirk */}
-          <motion.div className="bento-card card-quirk" {...fadeUp(0.25)}>
+          <GlowCard className="card-quirk" delay={0.25}>
             <div className="card-inner quirk-inner">
               <span className="quirk-emoji">🧩</span>
               <p className="quirk-text">Talked to the model.<br />It hallucinated. <span className="accent-text">Again.</span></p>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 5: Currently */}
-          <motion.div className="bento-card card-currently" {...fadeUp(0.3)}>
+          <GlowCard className="card-currently" delay={0.3}>
             <div className="card-inner">
-              <p className="card-label">Currently</p>
+              <p className="card-label">Currently Building</p>
               <p className="currently-text">
-                Building <span className="accent-text">Garuda</span> — an AI-powered urban intelligence platform with satellite imagery analysis & YOLO detection.
+                <span className="accent-text">Garuda</span> — an AI-powered urban intelligence platform with satellite imagery analysis & YOLO-based change detection.
               </p>
               <div className="currently-tags">
-                <span>FastAPI</span>
-                <span>React</span>
-                <span>YOLO</span>
-                <span>GIS</span>
+                <span>FastAPI</span><span>React</span><span>YOLO</span><span>GIS</span>
               </div>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 6: Fun one */}
-          <motion.div className="bento-card card-fun" {...fadeUp(0.2)}>
+          <GlowCard className="card-fun" delay={0.2}>
             <div className="card-inner quirk-inner">
               <span className="quirk-emoji">🎨</span>
               <p className="quirk-text">CSS is my <br /><span className="accent-text">therapy.</span></p>
             </div>
-          </motion.div>
+          </GlowCard>
 
-          {/* Card 7: Vibe */}
-          <motion.div className="bento-card card-vibe" {...fadeUp(0.35)}>
+          <GlowCard className="card-vibe" delay={0.35}>
             <div className="card-inner">
-              <p className="card-label">My Approach</p>
+              <p className="card-label">Philosophy</p>
               <p className="vibe-text">
                 <span className="accent-text">Ship fast.</span> Break things. Learn faster. Every hackathon is a masterclass in building under pressure.
               </p>
             </div>
-          </motion.div>
+          </GlowCard>
         </div>
       </div>
     </section>

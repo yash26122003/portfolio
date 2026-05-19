@@ -1,17 +1,17 @@
-.bento { padding: 100px 40px; }
+.bento { padding: 120px 40px; }
 .bento-container { max-width: 1200px; margin: 0 auto; }
 
 .section-tag {
-  font-family: var(--font-mono); font-size: 0.75rem;
+  font-family: var(--font-mono); font-size: 0.72rem;
   color: var(--accent); text-transform: uppercase;
   letter-spacing: 0.15em; display: block; margin-bottom: 16px;
 }
 
-.bento-header { margin-bottom: 60px; }
+.bento-header { margin-bottom: 72px; }
 .bento-title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 800; line-height: 1.1; letter-spacing: -0.03em;
+  font-weight: 800; line-height: 1.08; letter-spacing: -0.03em;
 }
 .accent-text { color: var(--accent); }
 
@@ -19,29 +19,50 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: auto;
-  gap: 16px;
+  gap: 14px;
 }
 
+/* Glow card base */
 .bento-card {
   border-radius: var(--radius);
   background: var(--bg-card);
   border: 1px solid var(--border);
   overflow: hidden;
-  transition: all 0.4s var(--ease);
+  transition: border-color 0.4s var(--ease), transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  position: relative;
+  --glow-x: 50%;
+  --glow-y: 50%;
 }
 .bento-card:hover {
   border-color: var(--border-hover);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
 }
 
-.card-inner { padding: 32px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+/* Cursor-following glow */
+.card-glow {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  opacity: 0; transition: opacity 0.4s;
+  background: radial-gradient(
+    400px circle at var(--glow-x) var(--glow-y),
+    rgba(200,255,0,0.06),
+    transparent 60%
+  );
+}
+.bento-card:hover .card-glow { opacity: 1; }
 
-/* Card 1: Intro — spans 2 cols */
+.card-inner {
+  padding: 32px; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative; z-index: 1;
+}
+
+/* Card 1: Intro */
 .card-intro { grid-column: span 2; grid-row: span 2; }
 .card-quote {
   font-family: var(--font-display);
-  font-size: 1.4rem; font-weight: 600;
+  font-size: 1.35rem; font-weight: 600;
   line-height: 1.5; color: var(--text);
   margin-bottom: 32px;
 }
@@ -53,12 +74,12 @@
 }
 .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .card-name { font-weight: 600; font-size: 0.9rem; }
-.card-role { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+.card-role { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); }
 
-/* Card 2: Tech stack — spans 2 cols */
+/* Card 2: Tech */
 .card-stack { grid-column: span 2; }
 .card-label {
-  font-family: var(--font-mono); font-size: 0.7rem;
+  font-family: var(--font-mono); font-size: 0.68rem;
   color: var(--text-muted); text-transform: uppercase;
   letter-spacing: 0.12em; margin-bottom: 20px;
 }
@@ -67,27 +88,38 @@
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px; border-radius: 100px;
   background: var(--surface); border: 1px solid var(--border);
-  font-size: 0.8rem; font-weight: 500; color: var(--text-dim);
-  cursor: default; transition: all 0.2s;
+  font-size: 0.78rem; font-weight: 500; color: var(--text-dim);
+  transition: all 0.25s var(--ease);
 }
-.stack-pill:hover { background: var(--accent-dim); border-color: rgba(200,255,0,0.2); color: var(--accent); }
+.stack-pill:hover {
+  background: var(--accent-dim);
+  border-color: rgba(200,255,0,0.2);
+  color: var(--accent);
+  box-shadow: 0 4px 20px rgba(200,255,0,0.08);
+}
 .pill-icon { font-size: 1rem; }
 
 /* Card 3: Stats */
 .card-stats { grid-column: span 2; }
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .stat-block { text-align: center; }
 .stat-number {
   font-family: var(--font-display);
-  font-size: 2.5rem; font-weight: 800;
-  color: var(--accent); display: block;
+  font-size: 2.8rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #86efac);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block;
 }
-.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.stat-label {
+  font-size: 0.72rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-top: 4px;
+}
 
 /* Card 4: Quirk */
 .card-quirk { grid-column: span 1; }
 .quirk-inner { align-items: center; justify-content: center; text-align: center; gap: 16px; }
-.quirk-emoji { font-size: 2.5rem; }
+.quirk-emoji { font-size: 2.8rem; }
 .quirk-text { font-family: var(--font-display); font-size: 1rem; font-weight: 600; line-height: 1.4; color: var(--text-dim); }
 
 /* Card 5: Currently */
@@ -95,9 +127,9 @@
 .currently-text { font-size: 1rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; }
 .currently-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .currently-tags span {
-  padding: 4px 12px; border-radius: 100px; font-size: 0.7rem;
-  background: rgba(167,139,250,0.1); color: var(--purple);
-  border: 1px solid rgba(167,139,250,0.15); font-weight: 500;
+  padding: 4px 14px; border-radius: 100px; font-size: 0.68rem;
+  background: rgba(167,139,250,0.08); color: var(--purple);
+  border: 1px solid rgba(167,139,250,0.12); font-weight: 500;
 }
 
 /* Card 6: Fun */
@@ -115,7 +147,7 @@
   .card-intro { grid-column: span 2; grid-row: span 1; }
 }
 @media (max-width: 640px) {
-  .bento { padding: 60px 16px; }
+  .bento { padding: 72px 16px; }
   .bento-grid { grid-template-columns: 1fr; }
   .bento-card { grid-column: span 1 !important; }
 }

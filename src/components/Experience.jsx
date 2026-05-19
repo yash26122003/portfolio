@@ -27,10 +27,10 @@ const experiences = [
 ]
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 50 },
-  whileInView: { opacity: 1, y: 0 },
+  initial: { opacity: 0, y: 50, filter: 'blur(8px)' },
+  whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' },
   viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.7, delay, ease: [0.25, 0.46, 0.45, 0.94] }
+  transition: { duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }
 })
 
 export default function Experience() {
@@ -38,7 +38,7 @@ export default function Experience() {
     <section className="experience" id="experience">
       <div className="exp-container">
         <motion.div className="exp-header" {...fadeUp()}>
-          <span className="section-tag">Experience</span>
+          <span className="section-tag">// experience</span>
           <h2 className="exp-title">
             My <span className="accent-text">journey</span><br />so far
           </h2>
@@ -56,6 +56,7 @@ export default function Experience() {
                   {exp.tags.map(t => <span key={t}>{t}</span>)}
                 </div>
               </div>
+              <div className="exp-line-accent" />
             </motion.div>
           ))}
         </div>
